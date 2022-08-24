@@ -1,14 +1,15 @@
-import { Route, Routes,Router } from "react-router";
+import { Route, Routes, Router } from "react-router";
 import Businesssegmentstabs from "./Components/Business-segments-tabs/Businesssegmentstabs";
-
-
 
 function App() {
   return (
     <div className="App">
-     
       <Routes>
-        <Route path="/businesssegments" element={<Businesssegmentstabs/>} />
+        <Route
+          path="/businesssegments"
+          render={<Businesssegmentstabs />}
+          element={<Businesssegmentstabs />}
+        />
       </Routes>
     </div>
   );
