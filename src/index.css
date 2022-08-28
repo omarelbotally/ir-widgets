@@ -1,13 +1,46 @@
+@font-face {
+  font-family: "Avenir";
+  src: url("../src/fonts/fonts/Avenir-Black.woff") format("woff2"),
+    url("../src/fonts/fonts/Avenir-Heavy.woff") format("woff");
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Avenir";
+  src: url("../src/fonts/fonts/Avenir-Black.woff2") format("woff2"),
+    url("../src/fonts/fonts/Avenir-Black.woff") format("woff");
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Avenir Book";
+  src: url("../src/fonts/fonts/Avenir-Book.woff2") format("woff2"),
+    url("../src/fonts/fonts/Avenir-Book.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Avenir";
+  src: url("../src/fonts/fonts/Avenir-Medium.woff2") format("woff2"),
+    url("../src/fonts/fonts/Avenir-Medium.woff") format("woff");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  font-family: "Avenir";
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+  font-family: "Avenir";
 }
