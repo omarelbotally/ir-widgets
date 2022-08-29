@@ -28,9 +28,9 @@ function Businesssegmentstabs() {
 
   let checkPositivity = () => {
     td.forEach((ele) => {
-      if (ele.innerHTML >= 0) {
+      if (Number(ele.innerHTML) >= 0) {
         ele.classList.add("green-color");
-      } else if (ele.innerHTML < 0) {
+      } else if (Number(ele.innerHTML) < 0) {
         ele.innerHTML = `(${Math.abs(ele.innerHTML)})`;
         ele.classList.add("red-color");
       }
@@ -50,14 +50,14 @@ function Businesssegmentstabs() {
         }
       )
       .then((response) => {
-        setSalesData(response.data.fsFields[3].businessSegments);
-        setCostOfSalesData(response.data.fsFields[4].businessSegments);
-        setNetIncomeData(response.data.fsFields[0].businessSegments);
-        setTotalAssetsData(response.data.fsFields[1].businessSegments);
-        setTotalLiabilitiesData(response.data.fsFields[2].businessSegments);
+        setSalesData(response.data.fsFields[0]);
+        setCostOfSalesData(response.data.fsFields[1]);
+        setNetIncomeData(response.data.fsFields[2]);
+        setTotalAssetsData(response.data.fsFields[3]);
+        setTotalLiabilitiesData(response.data.fsFields[4]);
+        console.log(response.data);
         setTimeout(() => {
           setLoading(true);
-          checkPositivity();
         }, 1000);
       });
 
@@ -76,9 +76,9 @@ function Businesssegmentstabs() {
         setCostOfSalesGeo(resp.data.fsFields[1]);
         setNetIncomeGeo(resp.data.fsFields[2]);
       });
-  }, [fiscalPeriodType, currency]);
 
-  useEffect(() => {}, []);
+    checkPositivity();
+  }, [fiscalPeriodType, currency]);
 
   if (!loading) {
     return <div>loading...</div>;
@@ -89,28 +89,28 @@ function Businesssegmentstabs() {
           <Tabs>
             <TabList>
               <Tab>
-                <h5 className=".active-tab">BUSINESS</h5>
+                <h5 className="">BUSINESS</h5>
               </Tab>
               <Tab>
-                <h5 className="active">GEO SEGMENTS</h5>
+                <h5 className="">GEO SEGMENTS</h5>
               </Tab>
             </TabList>
 
             <TabPanel>
               <table className="w-100">
-                <tr className="td-data">
+                <tr className="">
                   <td className="avenir-sm">Egypt </td>
                 </tr>
 
-                <tr className="td-data">
+                <tr className="">
                   <td className="avenir-sm ">Other Countries</td>
                 </tr>
 
-                <tr className="td-data">
+                <tr className="">
                   <td className="avenir-sm ">Saudi Arabia </td>
                 </tr>
 
-                <tr className="td-data">
+                <tr className="">
                   <td className="avenir-sm ">Iran </td>
                 </tr>
               </table>
@@ -229,37 +229,18 @@ function Businesssegmentstabs() {
                           style={{
                             backgroundColor: "white",
                             padding: "20px",
-                            height: "50px",
+                            height: "80px",
                           }}
                         >
                           <td>
                             <BsFillArrowLeftCircleFill />
                           </td>
 
-                          <td className="text-lg-start">
-                            {salesData[0].periodicValues[0].forDate}
-                          </td>
-
-                          <td className="text-lg-start">
-                            {salesData[0].periodicValues[1].forDate}
-                          </td>
-
-                          <td className="text-lg-start">
-                            {salesData[0].periodicValues[2].forDate}
-                          </td>
-
-                          <td className="text-lg-start">
-                            {" "}
-                            {salesData[0].periodicValues[3].forDate}
-                          </td>
-
-                          <td className="text-lg-start">
-                            {salesData[0].periodicValues[4].forDate}
-                          </td>
-
-                          <td className="text-lg-start">
-                            {salesData[0].periodicValues[5].forDate}
-                          </td>
+                          {salesData.businessSegments[0].periodicValues.map(
+                            (s) => {
+                              return <td>{s.forDate}</td>;
+                            }
+                          )}
 
                           <td>
                             <BsFillArrowRightCircleFill />
@@ -276,509 +257,125 @@ function Businesssegmentstabs() {
                           <td>Million RIYAL</td>
                         </tr>
 
-                        <tr>
-                          <td className="headlines">- net Income</td>
-                        </tr>
-                        <tr>
-                          <td className="td-data">
-                            {netIncomeData[0].businessSegmentNameEn}
-                          </td>
-                          {netIncomeData[0].periodicValues.map((v) => {
-                            return (
-                              <td className="td-data">
-                                {Number.parseFloat(
-                                  dollarUSLocale.format(v.value)
-                                ).toFixed(2)}
-                              </td>
-                            );
-                          })}
+                        <tr className="headlines">
+                          - {salesData.fsFieldNameEn}
                         </tr>
 
-                        <tr>
-                          <td className="td-data">
-                            {netIncomeData[1].businessSegmentNameEn}
-                          </td>
-                          {netIncomeData[1].periodicValues.map((v) => {
-                            return (
-                              <td className="td-data">
-                                {" "}
-                                {Number.parseFloat(
-                                  dollarUSLocale.format(v.value)
-                                ).toFixed(2)}
-                              </td>
-                            );
-                          })}
+                        {salesData.businessSegments.map((v) => {
+                          return (
+                            <tr>
+                              <td>{v.businessSegmentNameEn}</td>
+
+                              {v.periodicValues.map((t) => {
+                                return (
+                                  <td className="td-data">
+                                    {t.value == null
+                                      ? "0.00"
+                                      : dollarUSLocale.format(
+                                          Number.parseFloat(t.value).toFixed(2)
+                                        )}
+                                  </td>
+                                );
+                              })}
+                            </tr>
+                          );
+                        })}
+
+                        <tr className="headlines">
+                          - {costOfSalesData.fsFieldNameEn}
                         </tr>
 
-                        <tr>
-                          <td className="td-data">
-                            {netIncomeData[2].businessSegmentNameEn}
-                          </td>
-                          {netIncomeData[2].periodicValues.map((v) => {
-                            return (
-                              <td className="td-data">
-                                {" "}
-                                {Number.parseFloat(
-                                  dollarUSLocale.format(v.value)
-                                ).toFixed(2)}
-                              </td>
-                            );
-                          })}
+                        {costOfSalesData.businessSegments.map((v) => {
+                          return (
+                            <tr>
+                              <td>{v.businessSegmentNameEn}</td>
+
+                              {v.periodicValues.map((t) => {
+                                return (
+                                  <td className="td-data">
+                                    {t.value == null
+                                      ? "0.00"
+                                      : dollarUSLocale.format(
+                                          Number.parseFloat(t.value).toFixed(2)
+                                        )}
+                                  </td>
+                                );
+                              })}
+                            </tr>
+                          );
+                        })}
+
+                        <tr className="headlines">
+                          - {netIncomeData.fsFieldNameEn}
                         </tr>
 
-                        <tr>
-                          <td className="td-data">
-                            {netIncomeData[3].businessSegmentNameEn}
-                          </td>
-                          {netIncomeData[3].periodicValues.map((v) => {
-                            return (
-                              <td className="td-data">
-                                {" "}
-                                {Number.parseFloat(
-                                  dollarUSLocale.format(v.value)
-                                ).toFixed(2)}
-                              </td>
-                            );
-                          })}
+                        {netIncomeData.businessSegments.map((v) => {
+                          return (
+                            <tr>
+                              <td>{v.businessSegmentNameEn}</td>
+
+                              {v.periodicValues.map((t) => {
+                                return (
+                                  <td className="td-data">
+                                    {t.value == null
+                                      ? "0.00"
+                                      : dollarUSLocale.format(
+                                          Number.parseFloat(t.value).toFixed(2)
+                                        )}
+                                  </td>
+                                );
+                              })}
+                            </tr>
+                          );
+                        })}
+
+                        <tr className="headlines">
+                          - {totalAssetsData.fsFieldNameEn}
                         </tr>
 
-                        <tr>
-                          <td className="td-data">
-                            {netIncomeData[4].businessSegmentNameEn}
-                          </td>
-                          {netIncomeData[4].periodicValues.map((v) => {
-                            return (
-                              <td className="td-data">
-                                {" "}
-                                {Number.parseFloat(
-                                  dollarUSLocale.format(v.value)
-                                ).toFixed(2)}
-                              </td>
-                            );
-                          })}
-                        </tr>
-                        <tr>
-                          <td className="td-data">
-                            {netIncomeData[5].businessSegmentNameEn}
-                          </td>
-                          {netIncomeData[5].periodicValues.map((v) => {
-                            return (
-                              <td className="td-data">
-                                {" "}
-                                {Number.parseFloat(
-                                  dollarUSLocale.format(v.value)
-                                ).toFixed(2)}
-                              </td>
-                            );
-                          })}
+                        {totalAssetsData.businessSegments.map((v) => {
+                          return (
+                            <tr>
+                              <td>{v.businessSegmentNameEn}</td>
+
+                              {v.periodicValues.map((t) => {
+                                return (
+                                  <td className="td-data">
+                                    {t.value == null
+                                      ? "0.00"
+                                      : dollarUSLocale.format(
+                                          Number.parseFloat(t.value).toFixed(2)
+                                        )}
+                                  </td>
+                                );
+                              })}
+                            </tr>
+                          );
+                        })}
+
+                        <tr className="headlines">
+                          - {totalLiabilitiesData.fsFieldNameEn}
                         </tr>
 
-                        <tr>
-                          <td className="td-data">
-                            {netIncomeData[6].businessSegmentNameEn}
-                          </td>
-                          {netIncomeData[6].periodicValues.map((v) => {
-                            return (
-                              <td className="td-data">
-                                {" "}
-                                {Number.parseFloat(
-                                  dollarUSLocale.format(v.value)
-                                ).toFixed(2)}
-                              </td>
-                            );
-                          })}
-                        </tr>
+                        {totalLiabilitiesData.businessSegments.map((v) => {
+                          return (
+                            <tr>
+                              <td>{v.businessSegmentNameEn}</td>
 
-                        <tr>
-                          <td className="td-data">
-                            {netIncomeData[7].businessSegmentNameEn}
-                          </td>
-                          {netIncomeData[7].periodicValues.map((v) => {
-                            return (
-                              <td className="td-data">
-                                {" "}
-                                {Number.parseFloat(
-                                  dollarUSLocale.format(v.value)
-                                ).toFixed(2)}
-                              </td>
-                            );
-                          })}
-                        </tr>
-
-                        <tr>
-                          <td className="headlines">- Total Assets</td>
-                        </tr>
-                        <tr>
-                          <td className="td-data">
-                            {totalAssetsData[0].businessSegmentNameEn}
-                          </td>
-                          {totalAssetsData[0].periodicValues.map((v) => {
-                            return (
-                              <td className="td-data">
-                                {" "}
-                                {Number.parseFloat(
-                                  dollarUSLocale.format(v.value)
-                                ).toFixed(2)}
-                              </td>
-                            );
-                          })}
-                        </tr>
-
-                        <tr>
-                          <td className="td-data">
-                            {totalAssetsData[1].businessSegmentNameEn}
-                          </td>
-                          {totalAssetsData[1].periodicValues.map((v) => {
-                            return (
-                              <td className="td-data">
-                                {" "}
-                                {Number.parseFloat(
-                                  dollarUSLocale.format(v.value)
-                                ).toFixed(2)}
-                              </td>
-                            );
-                          })}
-                        </tr>
-
-                        <tr>
-                          <td className="td-data">
-                            {totalAssetsData[2].businessSegmentNameEn}
-                          </td>
-                          {totalAssetsData[2].periodicValues.map((v) => {
-                            return (
-                              <td className="td-data">
-                                {" "}
-                                {Number.parseFloat(
-                                  dollarUSLocale.format(v.value)
-                                ).toFixed(2)}
-                              </td>
-                            );
-                          })}
-                        </tr>
-
-                        <tr>
-                          <td className="td-data">
-                            {totalAssetsData[3].businessSegmentNameEn}
-                          </td>
-                          {totalAssetsData[3].periodicValues.map((v) => {
-                            return (
-                              <td className="td-data">
-                                {" "}
-                                {Number.parseFloat(
-                                  dollarUSLocale.format(v.value)
-                                ).toFixed(2)}
-                              </td>
-                            );
-                          })}
-                        </tr>
-
-                        <tr>
-                          <td className="td-data">
-                            {totalAssetsData[4].businessSegmentNameEn}
-                          </td>
-                          {totalAssetsData[4].periodicValues.map((v) => {
-                            return (
-                              <td className="td-data">
-                                {" "}
-                                {Number.parseFloat(
-                                  dollarUSLocale.format(v.value)
-                                ).toFixed(2)}
-                              </td>
-                            );
-                          })}
-                        </tr>
-                        {/* <tr>
-                    <td>{totalAssetsData[5].businessSegmentNameEn}</td>
-                    {totalAssetsData[5].periodicValues.map((v) => {
-                      return (
-                        <td className="td-data">
-                          {" "}
-                          {Number.parseFloat(
-                            dollarUSLocale.format(v.value)
-                          ).toFixed(2)}
-                        </td>
-                      );
-                    })}
-                  </tr> */}
-
-                        <tr>
-                          <td className="headlines">- Total Liabilities</td>
-                        </tr>
-                        <tr>
-                          <td className="td-data">
-                            {totalLiabilitiesData[0].businessSegmentNameEn}
-                          </td>
-                          {totalLiabilitiesData[0].periodicValues.map((v) => {
-                            return (
-                              <td className="td-data">
-                                {" "}
-                                {Number.parseFloat(
-                                  dollarUSLocale.format(v.value)
-                                ).toFixed(2)}
-                              </td>
-                            );
-                          })}
-                        </tr>
-
-                        <tr>
-                          <td className="td-data">
-                            {totalLiabilitiesData[1].businessSegmentNameEn}
-                          </td>
-                          {totalLiabilitiesData[1].periodicValues.map((v) => {
-                            return (
-                              <td className="td-data">
-                                {" "}
-                                {Number.parseFloat(
-                                  dollarUSLocale.format(v.value)
-                                ).toFixed(2)}
-                              </td>
-                            );
-                          })}
-                        </tr>
-
-                        <tr className="td-data">
-                          <td>
-                            {totalLiabilitiesData[2].businessSegmentNameEn}
-                          </td>
-                          {totalLiabilitiesData[2].periodicValues.map((v) => {
-                            return (
-                              <td className="td-data">
-                                {" "}
-                                {Number.parseFloat(
-                                  dollarUSLocale.format(v.value)
-                                ).toFixed(2)}
-                              </td>
-                            );
-                          })}
-                        </tr>
-
-                        <tr>
-                          <td className="td-data">
-                            {totalLiabilitiesData[3].businessSegmentNameEn}
-                          </td>
-                          {totalLiabilitiesData[3].periodicValues.map((v) => {
-                            return (
-                              <td className="td-data">
-                                {" "}
-                                {Number.parseFloat(
-                                  dollarUSLocale.format(v.value)
-                                ).toFixed(2)}
-                              </td>
-                            );
-                          })}
-                        </tr>
-
-                        <tr>
-                          <td className="td-data">
-                            {totalLiabilitiesData[4].businessSegmentNameEn}
-                          </td>
-                          {totalLiabilitiesData[4].periodicValues.map((v) => {
-                            return (
-                              <td className="td-data">
-                                {" "}
-                                {Number.parseFloat(
-                                  dollarUSLocale.format(v.value)
-                                ).toFixed(2)}
-                              </td>
-                            );
-                          })}
-                        </tr>
-                        <tr>
-                          <td className="td-data">
-                            {totalLiabilitiesData[5].businessSegmentNameEn}
-                          </td>
-                          {totalLiabilitiesData[5].periodicValues.map((v) => {
-                            return (
-                              <td className="td-data">
-                                {" "}
-                                {Number.parseFloat(
-                                  dollarUSLocale.format(v.value)
-                                ).toFixed(2)}
-                              </td>
-                            );
-                          })}
-                        </tr>
-
-                        <tr>
-                          <td className="headlines">- Sales </td>
-                        </tr>
-                        <tr>
-                          <td className="td-data">
-                            {salesData[0].businessSegmentNameEn}
-                          </td>
-                          {salesData[0].periodicValues.map((v) => {
-                            return (
-                              <td className="td-data">
-                                {" "}
-                                {Number.parseFloat(
-                                  dollarUSLocale.format(v.value)
-                                ).toFixed(2)}
-                              </td>
-                            );
-                          })}
-                        </tr>
-
-                        <tr>
-                          <td className="td-data">
-                            {salesData[1].businessSegmentNameEn}
-                          </td>
-                          {salesData[1].periodicValues.map((v) => {
-                            return (
-                              <td className="td-data">
-                                {" "}
-                                {Number.parseFloat(
-                                  dollarUSLocale.format(v.value)
-                                ).toFixed(2)}
-                              </td>
-                            );
-                          })}
-                        </tr>
-
-                        <tr>
-                          <td className="td-data">
-                            {salesData[2].businessSegmentNameEn}
-                          </td>
-                          {salesData[2].periodicValues.map((v) => {
-                            return (
-                              <td className="td-data">
-                                {" "}
-                                {Number.parseFloat(
-                                  dollarUSLocale.format(v.value)
-                                ).toFixed(2)}
-                              </td>
-                            );
-                          })}
-                        </tr>
-
-                        <tr>
-                          <td className="td-data">
-                            {salesData[3].businessSegmentNameEn}
-                          </td>
-                          {salesData[3].periodicValues.map((v) => {
-                            return (
-                              <td className="td-data">
-                                {" "}
-                                {Number.parseFloat(
-                                  dollarUSLocale.format(v.value)
-                                ).toFixed(2)}
-                              </td>
-                            );
-                          })}
-                        </tr>
-
-                        <tr>
-                          <td className="td-data">
-                            {salesData[4].businessSegmentNameEn}
-                          </td>
-                          {salesData[4].periodicValues.map((v) => {
-                            return (
-                              <td className="td-data">
-                                {" "}
-                                {Number.parseFloat(
-                                  dollarUSLocale.format(v.value)
-                                ).toFixed(2)}
-                              </td>
-                            );
-                          })}
-                        </tr>
-                        <tr>
-                          <td className="td-data">
-                            {salesData[5].businessSegmentNameEn}
-                          </td>
-                          {salesData[5].periodicValues.map((v) => {
-                            return (
-                              <td className="td-data">
-                                {" "}
-                                {Number.parseFloat(
-                                  dollarUSLocale.format(v.value)
-                                ).toFixed(2)}
-                              </td>
-                            );
-                          })}
-                        </tr>
-
-                        <tr>
-                          <td className="headlines">- Cost Of Sales </td>
-                        </tr>
-                        <tr>
-                          <td className="td-data">
-                            {costOfSalesData[0].businessSegmentNameEn}
-                          </td>
-                          {costOfSalesData[0].periodicValues.map((v) => {
-                            return (
-                              <td className="td-data">
-                                {" "}
-                                {Number.parseFloat(
-                                  dollarUSLocale.format(v.value)
-                                ).toFixed(2)}
-                              </td>
-                            );
-                          })}
-                        </tr>
-
-                        <tr>
-                          <td className="td-data">
-                            {costOfSalesData[1].businessSegmentNameEn}
-                          </td>
-                          {costOfSalesData[1].periodicValues.map((v) => {
-                            return (
-                              <td className="td-data">
-                                {" "}
-                                {Number.parseFloat(
-                                  dollarUSLocale.format(v.value)
-                                ).toFixed(2)}
-                              </td>
-                            );
-                          })}
-                        </tr>
-
-                        <tr>
-                          <td className="td-data">
-                            {costOfSalesData[2].businessSegmentNameEn}
-                          </td>
-                          {costOfSalesData[2].periodicValues.map((v) => {
-                            return (
-                              <td className="td-data">
-                                {" "}
-                                {Number.parseFloat(
-                                  dollarUSLocale.format(v.value)
-                                ).toFixed(2)}
-                              </td>
-                            );
-                          })}
-                        </tr>
-
-                        <tr>
-                          <td className="td-data">
-                            {costOfSalesData[3].businessSegmentNameEn}
-                          </td>
-                          {costOfSalesData[3].periodicValues.map((v) => {
-                            return (
-                              <td className="td-data">
-                                {" "}
-                                {Number.parseFloat(
-                                  dollarUSLocale.format(v.value)
-                                ).toFixed(2)}
-                              </td>
-                            );
-                          })}
-                        </tr>
-
-                        <tr>
-                          <td className="td-data">
-                            {costOfSalesData[4].businessSegmentNameEn}
-                          </td>
-                          {costOfSalesData[4].periodicValues.map((v) => {
-                            return (
-                              <td className="td-data">
-                                {" "}
-                                {Number.parseFloat(
-                                  dollarUSLocale.format(v.value)
-                                ).toFixed(2)}
-                              </td>
-                            );
-                          })}
-                        </tr>
+                              {v.periodicValues.map((t) => {
+                                return (
+                                  <td className="td-data">
+                                    {t.value == null
+                                      ? "0.00"
+                                      : dollarUSLocale.format(
+                                          Number.parseFloat(t.value).toFixed(2)
+                                        )}
+                                  </td>
+                                );
+                              })}
+                            </tr>
+                          );
+                        })}
                       </tbody>
                     </table>
                   </div>
@@ -965,31 +562,11 @@ function Businesssegmentstabs() {
                       <td>
                         <BsFillArrowLeftCircleFill />
                       </td>
-
-                      <td className="text-lg-start">
-                        {salesData[0].periodicValues[0].forDate}
-                      </td>
-
-                      <td className="text-lg-start">
-                        {salesData[0].periodicValues[1].forDate}
-                      </td>
-
-                      <td className="text-lg-start">
-                        {salesData[0].periodicValues[2].forDate}
-                      </td>
-
-                      <td className="text-lg-start">
-                        {" "}
-                        {salesData[0].periodicValues[3].forDate}
-                      </td>
-
-                      <td className="text-lg-start">
-                        {salesData[0].periodicValues[4].forDate}
-                      </td>
-
-                      <td className="text-lg-start">
-                        {salesData[0].periodicValues[5].forDate}
-                      </td>
+                      {salesGeo.geoLocationSegments[0].periodicValues.map(
+                        (v) => {
+                          return <td>{v.forDate}</td>;
+                        }
+                      )}
 
                       <td>
                         <BsFillArrowRightCircleFill />
@@ -1010,15 +587,77 @@ function Businesssegmentstabs() {
                       <td className="headlines">- {salesGeo.fsFieldNameEn}</td>
                     </tr>
 
+                    {salesGeo.geoLocationSegments.map((v) => {
+                      return (
+                        <tr>
+                          <td>{v.geoLocationSegmentNameEn}</td>
+
+                          {v.periodicValues.map((t) => {
+                            return (
+                              <td className="td-data">
+                                {t.value == null
+                                  ? "0.00"
+                                  : dollarUSLocale.format(
+                                      Number.parseFloat(t.value).toFixed(2)
+                                    )}
+                              </td>
+                            );
+                          })}
+                        </tr>
+                      );
+                    })}
+
                     <tr>
-                      {salesGeo.geoLocationSegments.map((v) => {
-                        return (
-                          <tr>
-                            <td>{v.geoLocationSegmentNameEn}</td>
-                          </tr>
-                        );
-                      })}
+                      <td className="headlines">
+                        - {costOfSalesGeo.fsFieldNameEn}
+                      </td>
                     </tr>
+
+                    {costOfSalesGeo.geoLocationSegments.map((v) => {
+                      return (
+                        <tr>
+                          <td>{v.geoLocationSegmentNameEn}</td>
+
+                          {v.periodicValues.map((t) => {
+                            return (
+                              <td className="td-data">
+                                {t.value == null
+                                  ? "0.00"
+                                  : dollarUSLocale.format(
+                                      Number.parseFloat(t.value).toFixed(2)
+                                    )}
+                              </td>
+                            );
+                          })}
+                        </tr>
+                      );
+                    })}
+
+                    <tr>
+                      <td className="headlines">
+                        - {netIncomeGeo.fsFieldNameEn}
+                      </td>
+                    </tr>
+
+                    {netIncomeGeo.geoLocationSegments.map((v) => {
+                      return (
+                        <tr>
+                          <td>{v.geoLocationSegmentNameEn}</td>
+
+                          {v.periodicValues.map((t) => {
+                            return (
+                              <td className="td-data">
+                                {t.value == null
+                                  ? "0.00"
+                                  : dollarUSLocale.format(
+                                      Number.parseFloat(t.value).toFixed(2)
+                                    )}
+                              </td>
+                            );
+                          })}
+                        </tr>
+                      );
+                    })}
                   </tbody>
                 </table>
               </div>
