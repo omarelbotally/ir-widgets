@@ -39,7 +39,8 @@ function Businesssegmentstabs() {
 
   useEffect(() => {
     Api.getAccessToken();
-
+  });
+  useEffect(() => {
     axios
       .get(
         `https://data.argaam.com/api/v1.0/json/ir-api/business-segments?fiscalPeriodType=${fiscalPeriodType}&currency=${currency}`,
@@ -77,7 +78,9 @@ function Businesssegmentstabs() {
         setNetIncomeGeo(resp.data.fsFields[2]);
       });
 
-    checkPositivity();
+    setTimeout(() => {
+      checkPositivity();
+    }, 1000);
   }, [fiscalPeriodType, currency]);
 
   if (!loading) {
@@ -98,21 +101,23 @@ function Businesssegmentstabs() {
 
             <TabPanel>
               <table className="w-100">
-                <tr className="">
-                  <td className="avenir-sm">Egypt </td>
-                </tr>
+                <tbody>
+                  <tr className="">
+                    <td className="avenir-sm">Egypt </td>
+                  </tr>
 
-                <tr className="">
-                  <td className="avenir-sm ">Other Countries</td>
-                </tr>
+                  <tr className="">
+                    <td className="avenir-sm ">Other Countries</td>
+                  </tr>
 
-                <tr className="">
-                  <td className="avenir-sm ">Saudi Arabia </td>
-                </tr>
+                  <tr className="">
+                    <td className="avenir-sm ">Saudi Arabia </td>
+                  </tr>
 
-                <tr className="">
-                  <td className="avenir-sm ">Iran </td>
-                </tr>
+                  <tr className="">
+                    <td className="avenir-sm ">Iran </td>
+                  </tr>
+                </tbody>
               </table>
 
               <div className="header-of-tabs">
@@ -237,8 +242,8 @@ function Businesssegmentstabs() {
                           </td>
 
                           {salesData.businessSegments[0].periodicValues.map(
-                            (s) => {
-                              return <td>{s.forDate}</td>;
+                            (s, index) => {
+                              return <td key={index}>{s.forDate}</td>;
                             }
                           )}
 
@@ -261,14 +266,13 @@ function Businesssegmentstabs() {
                           - {salesData.fsFieldNameEn}
                         </tr>
 
-                        {salesData.businessSegments.map((v) => {
+                        {salesData.businessSegments.map((v, index) => {
                           return (
-                            <tr>
+                            <tr key={index}>
                               <td>{v.businessSegmentNameEn}</td>
-
-                              {v.periodicValues.map((t) => {
+                              {v.periodicValues.map((t, index) => {
                                 return (
-                                  <td className="td-data">
+                                  <td key={index} className="td-data">
                                     {t.value == null
                                       ? "0.00"
                                       : dollarUSLocale.format(
@@ -284,15 +288,13 @@ function Businesssegmentstabs() {
                         <tr className="headlines">
                           - {costOfSalesData.fsFieldNameEn}
                         </tr>
-
-                        {costOfSalesData.businessSegments.map((v) => {
+                        {costOfSalesData.businessSegments.map((v, index) => {
                           return (
-                            <tr>
+                            <tr key={index}>
                               <td>{v.businessSegmentNameEn}</td>
-
-                              {v.periodicValues.map((t) => {
+                              {v.periodicValues.map((t, index) => {
                                 return (
-                                  <td className="td-data">
+                                  <td key={index} className="td-data">
                                     {t.value == null
                                       ? "0.00"
                                       : dollarUSLocale.format(
@@ -308,15 +310,13 @@ function Businesssegmentstabs() {
                         <tr className="headlines">
                           - {netIncomeData.fsFieldNameEn}
                         </tr>
-
-                        {netIncomeData.businessSegments.map((v) => {
+                        {netIncomeData.businessSegments.map((v, index) => {
                           return (
-                            <tr>
+                            <tr key={index}>
                               <td>{v.businessSegmentNameEn}</td>
-
-                              {v.periodicValues.map((t) => {
+                              {v.periodicValues.map((t, index) => {
                                 return (
-                                  <td className="td-data">
+                                  <td className="td-data" key={index}>
                                     {t.value == null
                                       ? "0.00"
                                       : dollarUSLocale.format(
@@ -332,15 +332,13 @@ function Businesssegmentstabs() {
                         <tr className="headlines">
                           - {totalAssetsData.fsFieldNameEn}
                         </tr>
-
-                        {totalAssetsData.businessSegments.map((v) => {
+                        {totalAssetsData.businessSegments.map((v, index) => {
                           return (
-                            <tr>
+                            <tr key={index}>
                               <td>{v.businessSegmentNameEn}</td>
-
-                              {v.periodicValues.map((t) => {
+                              {v.periodicValues.map((t, index) => {
                                 return (
-                                  <td className="td-data">
+                                  <td className="td-data" key={index}>
                                     {t.value == null
                                       ? "0.00"
                                       : dollarUSLocale.format(
@@ -357,25 +355,28 @@ function Businesssegmentstabs() {
                           - {totalLiabilitiesData.fsFieldNameEn}
                         </tr>
 
-                        {totalLiabilitiesData.businessSegments.map((v) => {
-                          return (
-                            <tr>
-                              <td>{v.businessSegmentNameEn}</td>
-
-                              {v.periodicValues.map((t) => {
-                                return (
-                                  <td className="td-data">
-                                    {t.value == null
-                                      ? "0.00"
-                                      : dollarUSLocale.format(
-                                          Number.parseFloat(t.value).toFixed(2)
-                                        )}
-                                  </td>
-                                );
-                              })}
-                            </tr>
-                          );
-                        })}
+                        {totalLiabilitiesData.businessSegments.map(
+                          (v, index) => {
+                            return (
+                              <tr key={index}>
+                                <td>{v.businessSegmentNameEn}</td>
+                                {v.periodicValues.map((t, index) => {
+                                  return (
+                                    <td className="td-data" key={index}>
+                                      {t.value == null
+                                        ? "0.00"
+                                        : dollarUSLocale.format(
+                                            Number.parseFloat(t.value).toFixed(
+                                              2
+                                            )
+                                          )}
+                                    </td>
+                                  );
+                                })}
+                              </tr>
+                            );
+                          }
+                        )}
                       </tbody>
                     </table>
                   </div>
@@ -384,64 +385,66 @@ function Businesssegmentstabs() {
             </TabPanel>
             <TabPanel>
               <table className="w-100">
-                <tr className="td-data">
-                  <td className="avenir-sm">Retail Sector</td>
-                  <td className="avenir-sm" style={{ color: "black" }}>
-                    Includes supermarket and hypermarket compounds
-                  </td>
-                </tr>
+                <tbody>
+                  <tr className="td-data">
+                    <td className="avenir-sm">Retail Sector</td>
+                    <td className="avenir-sm" style={{ color: "black" }}>
+                      Includes supermarket and hypermarket compounds
+                    </td>
+                  </tr>
 
-                <tr className="td-data">
-                  <td className="avenir-sm">Food sector</td>
-                  <td className="avenir-sm" style={{ color: "black" }}>
-                    Includes the manufacture and sale of edible oils, sugar,
-                    pasta products
-                  </td>
-                </tr>
+                  <tr className="td-data">
+                    <td className="avenir-sm">Food sector</td>
+                    <td className="avenir-sm" style={{ color: "black" }}>
+                      Includes the manufacture and sale of edible oils, sugar,
+                      pasta products
+                    </td>
+                  </tr>
 
-                <tr className="td-data">
-                  <td className="avenir-sm">Plastic</td>
-                  <td className="avenir-sm" style={{ color: "black" }}></td>
-                </tr>
+                  <tr className="td-data">
+                    <td className="avenir-sm">Plastic</td>
+                    <td className="avenir-sm" style={{ color: "black" }}></td>
+                  </tr>
 
-                <tr className="td-data">
-                  <td className="avenir-sm">Investments and treasury</td>
-                  <td className="avenir-sm" style={{ color: "black" }}>
-                    Includes investments in associates and Joint ventures
-                    companies, available for sale investments and other
-                    investments
-                  </td>
-                </tr>
+                  <tr className="td-data">
+                    <td className="avenir-sm">Investments and treasury</td>
+                    <td className="avenir-sm" style={{ color: "black" }}>
+                      Includes investments in associates and Joint ventures
+                      companies, available for sale investments and other
+                      investments
+                    </td>
+                  </tr>
 
-                <tr className="td-data">
-                  <td className="avenir-sm">Disposals</td>
-                  <td className="avenir-sm" style={{ color: "black" }}></td>
-                </tr>
+                  <tr className="td-data">
+                    <td className="avenir-sm">Disposals</td>
+                    <td className="avenir-sm" style={{ color: "black" }}></td>
+                  </tr>
 
-                <tr className="td-data">
-                  <td className="avenir-sm">
-                    Manufacturing & Whole sale sector
-                  </td>
-                  <td className="avenir-sm" style={{ color: "black" }}></td>
-                </tr>
+                  <tr className="td-data">
+                    <td className="avenir-sm">
+                      Manufacturing & Whole sale sector
+                    </td>
+                    <td className="avenir-sm" style={{ color: "black" }}></td>
+                  </tr>
 
-                <tr className="td-data">
-                  <td className="avenir-sm"> Food services</td>
-                  <td className="avenir-sm" style={{ color: "black" }}>
-                    Includes food products and fast food restaurant chain
-                    operated by Herfy
-                  </td>
-                </tr>
+                  <tr className="td-data">
+                    <td className="avenir-sm"> Food services</td>
+                    <td className="avenir-sm" style={{ color: "black" }}>
+                      Includes food products and fast food restaurant chain
+                      operated by Herfy
+                    </td>
+                  </tr>
 
-                <tr className="td-data">
-                  <td className="avenir-sm">Frozen food</td>
-                  <td className="avenir-sm" style={{ color: "black" }}></td>
-                </tr>
+                  <tr className="td-data">
+                    <td className="avenir-sm">Frozen food</td>
+                    <td className="avenir-sm" style={{ color: "black" }}></td>
+                  </tr>
 
-                <tr className="td-data">
-                  <td className="avenir-sm">Dicontinued operation</td>
-                  <td className="avenir-sm" style={{ color: "black" }}></td>
-                </tr>
+                  <tr className="td-data">
+                    <td className="avenir-sm">Dicontinued operation</td>
+                    <td className="avenir-sm" style={{ color: "black" }}></td>
+                  </tr>
+                </tbody>
               </table>
 
               <div className="header-of-tabs">
@@ -563,8 +566,8 @@ function Businesssegmentstabs() {
                         <BsFillArrowLeftCircleFill />
                       </td>
                       {salesGeo.geoLocationSegments[0].periodicValues.map(
-                        (v) => {
-                          return <td>{v.forDate}</td>;
+                        (v, index) => {
+                          return <td key={index}> {v.forDate}</td>;
                         }
                       )}
 
@@ -587,14 +590,13 @@ function Businesssegmentstabs() {
                       <td className="headlines">- {salesGeo.fsFieldNameEn}</td>
                     </tr>
 
-                    {salesGeo.geoLocationSegments.map((v) => {
+                    {salesGeo.geoLocationSegments.map((v, index) => {
                       return (
-                        <tr>
+                        <tr key={index}>
                           <td>{v.geoLocationSegmentNameEn}</td>
-
-                          {v.periodicValues.map((t) => {
+                          {v.periodicValues.map((t, index) => {
                             return (
-                              <td className="td-data">
+                              <td className="td-data" key={index}>
                                 {t.value == null
                                   ? "0.00"
                                   : dollarUSLocale.format(
@@ -613,14 +615,13 @@ function Businesssegmentstabs() {
                       </td>
                     </tr>
 
-                    {costOfSalesGeo.geoLocationSegments.map((v) => {
+                    {costOfSalesGeo.geoLocationSegments.map((v, index) => {
                       return (
-                        <tr>
+                        <tr key={index}>
                           <td>{v.geoLocationSegmentNameEn}</td>
-
-                          {v.periodicValues.map((t) => {
+                          {v.periodicValues.map((t, index) => {
                             return (
-                              <td className="td-data">
+                              <td key={index} className="td-data">
                                 {t.value == null
                                   ? "0.00"
                                   : dollarUSLocale.format(
@@ -639,14 +640,13 @@ function Businesssegmentstabs() {
                       </td>
                     </tr>
 
-                    {netIncomeGeo.geoLocationSegments.map((v) => {
+                    {netIncomeGeo.geoLocationSegments.map((v, index) => {
                       return (
-                        <tr>
+                        <tr key={index}>
                           <td>{v.geoLocationSegmentNameEn}</td>
-
-                          {v.periodicValues.map((t) => {
+                          {v.periodicValues.map((t, index) => {
                             return (
-                              <td className="td-data">
+                              <td key={index} className="td-data">
                                 {t.value == null
                                   ? "0.00"
                                   : dollarUSLocale.format(

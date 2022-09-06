@@ -1,0 +1,27 @@
+.latest-news-p {
+  font-size: 14px;
+  font-family: "avenir";
+  color: #105678;
+}
+
+.latest-news {
+  background-color: #f5f5f5;
+  width: 30%;
+  font-family: "avenir";
+  margin-left: auto;
+  margin-right: auto;
+  padding: 5px;
+  box-sizing: border-box;
+}
+
+.latest-news span {
+  font-size: 11px;
+  font-family: "avenir";
+  color: #105678;
+}
+
+.latest-news a {
+  font-size: 11px;
+  font-family: "avenir";
+  color: #105678;
+}

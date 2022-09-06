@@ -45,3 +45,7 @@ body {
 code {
   font-family: "Avenir";
 }
+
+p {
+  margin-bottom: 0px;
+}
